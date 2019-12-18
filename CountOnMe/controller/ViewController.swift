@@ -2,8 +2,8 @@
 //  ViewController.swift
 //  SimpleCalc
 //
-//  Created by Vincent Saluzzo on 29/03/2019.
-//  Copyright © 2019 Vincent Saluzzo. All rights reserved.
+//  Created by Maxime Berthet
+//  Copyright © 2019 Maxime Berthet. All rights reserved.
 //
 
 import UIKit
@@ -11,6 +11,7 @@ import UIKit
 class ViewController: UIViewController {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet var numberButtons: [UIButton]!
+
     
     var elements: [String] {
         return textView.text.split(separator: " ").map { "\($0)" }
@@ -26,7 +27,7 @@ class ViewController: UIViewController {
     }
     
     var canAddOperator: Bool {
-        return elements.last != "+" && elements.last != "-"
+        return elements.last != "+" && elements.last != "-" && elements.last != "x" && elements.last != "/"
     }
     
     var expressionHaveResult: Bool {
@@ -69,6 +70,24 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func tappedMultiplicationButton(_ sender: Any) {
+        if canAddOperator {
+                   textView.text.append(" x ")
+               } else {
+                    alertOperator(.operatorIsAlreadyInPlace)
+               }
+        
+      }
+      
+      @IBAction func tappedDivisionButton(_ sender: Any) {
+        if canAddOperator {
+                   textView.text.append(" / ")
+               } else {
+                    alertOperator(.operatorIsAlreadyInPlace)
+               }
+          
+      }
+    
     @IBAction func tappedEqualButton(_ sender: UIButton) {
         guard expressionIsCorrect else {
             alertOperator(.enterACorrectExpression)
@@ -82,29 +101,34 @@ class ViewController: UIViewController {
         
         // Create local copy of operations
         var operationsToReduce = elements
-        
         // Iterate over operations while an operand still here
-        while operationsToReduce.count > 1 {
-            let left = Int(operationsToReduce[0])!
-            let operand = operationsToReduce[1]
-            let right = Int(operationsToReduce[2])!
-            
-            
-            let result: Int
-            switch operand {
-            case "+": result = left + right
-            case "-": result = left - right
-            default: fatalError("Unknown operator !")
-            }
-            
-            operationsToReduce = Array(operationsToReduce.dropFirst(3))
-            operationsToReduce.insert("\(result)", at: 0)
+            while operationsToReduce.count > 1 {
+                let left = Int(operationsToReduce[0])!
+                let operand = operationsToReduce[1]
+                let right = Int(operationsToReduce[2])!
+                
+                
+                let result: Int
+                switch operand {
+                case "+": result = left + right
+                case "-": result = left - right
+                case "x" : result = left * right
+                case "/" : result = left / right
+                default: return
+                }
+                
+                operationsToReduce = Array(operationsToReduce.dropFirst(3))
+                operationsToReduce.insert("\(result)", at: 0)
         }
-        
+
         textView.text.append(" = \(operationsToReduce.first!)")
     }
+    
+  
+    
     enum alertOperatorEnum {
         case operatorIsAlreadyInPlace, startANewCalcul,enterACorrectExpression
+    
     }
     /// The operator alert that changes according to the enum
     func alertOperator(_ alertOperator : alertOperatorEnum ){
@@ -112,7 +136,7 @@ class ViewController: UIViewController {
                    alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
                    return self.present(alertVC, animated: true, completion: nil)
      }
-     /// The switch of the different alert messages 
+     /// The switch of the different alert messages
     func stringMessageAlert(_ alertOperator :  alertOperatorEnum ) -> String {
         let message = ["Un operateur est déja mis !","Démarrez un nouveau calcul !","Entrez une expression correcte !"]
         switch  alertOperator  {
