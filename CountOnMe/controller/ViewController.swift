@@ -57,9 +57,7 @@ class ViewController: UIViewController {
         if canAddOperator {
             textView.text.append(" + ")
         } else {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            self.present(alertVC, animated: true, completion: nil)
+            alertOperator(.operatorIsAlreadyInPlace)
         }
     }
     
@@ -67,23 +65,19 @@ class ViewController: UIViewController {
         if canAddOperator {
             textView.text.append(" - ")
         } else {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            self.present(alertVC, animated: true, completion: nil)
+             alertOperator(.operatorIsAlreadyInPlace)
         }
     }
-
+    
     @IBAction func tappedEqualButton(_ sender: UIButton) {
         guard expressionIsCorrect else {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Entrez une expression correcte !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            return self.present(alertVC, animated: true, completion: nil)
+            alertOperator(.enterACorrectExpression)
+            return
         }
         
         guard expressionHaveEnoughElement else {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Démarrez un nouveau calcul !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            return self.present(alertVC, animated: true, completion: nil)
+            alertOperator(.startANewCalcul)
+            return
         }
         
         // Create local copy of operations
@@ -94,6 +88,7 @@ class ViewController: UIViewController {
             let left = Int(operationsToReduce[0])!
             let operand = operationsToReduce[1]
             let right = Int(operationsToReduce[2])!
+            
             
             let result: Int
             switch operand {
@@ -108,6 +103,22 @@ class ViewController: UIViewController {
         
         textView.text.append(" = \(operationsToReduce.first!)")
     }
-
+    enum alertOperatorEnum {
+        case operatorIsAlreadyInPlace, startANewCalcul,enterACorrectExpression
+    }
+    /// The operator alert that changes according to the enum
+    func alertOperator(_ alertOperator : alertOperatorEnum ){
+        let alertVC = UIAlertController(title: "Zéro!", message: stringMessageAlert(alertOperator), preferredStyle: .alert)
+                   alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+                   return self.present(alertVC, animated: true, completion: nil)
+     }
+     /// The switch of the different alert messages 
+    func stringMessageAlert(_ alertOperator :  alertOperatorEnum ) -> String {
+        let message = ["Un operateur est déja mis !","Démarrez un nouveau calcul !","Entrez une expression correcte !"]
+        switch  alertOperator  {
+        case .operatorIsAlreadyInPlace : return message[0]
+        case .startANewCalcul : return message[1]
+        case .enterACorrectExpression : return message[2]
+        }
+    }
 }
-
