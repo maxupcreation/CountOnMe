@@ -106,30 +106,43 @@ class ViewController: UIViewController {
         var operand : String
         // Iterate over operations while an operand still here
         while operationsToReduce.count > 1 {
-            indexOperator = operationsToReduce.firstIndex(of: "*")!
-            if indexOperator == nil {
-                indexOperator = operationsToReduce.firstIndex(of: "/")!
+            indexOperator = operationsToReduce.firstIndex(of: "x") ?? -1
+            if indexOperator == -1 {
+                indexOperator = operationsToReduce.firstIndex(of: "/") ?? -1
             }
-            if indexOperator != nil {
+            if indexOperator != -1 {
                 let left = Double(operationsToReduce[indexOperator - 1])
                 let right = Double(operationsToReduce[indexOperator + 1])
                 operand = operationsToReduce[indexOperator]
                 switch operand {
-                case "*" : result = Double(left! * right!)
+                case "x" : result = Double(left! * right!)
                 case "/" : result = Double(left! / right!)
                 default : break
                 }
-                operationsToReduce.removeSubrange(indexOperator - 1..<indexOperator + 1)
+                operationsToReduce.removeSubrange(indexOperator - 1..<indexOperator + 2)
                 operationsToReduce.insert(String(result), at: indexOperator - 1)
+            } else {
+                indexOperator = operationsToReduce.firstIndex(of: "+") ?? -1
+                if indexOperator == -1 {
+                    indexOperator = operationsToReduce.firstIndex(of: "-") ?? -1
+                }
+                if indexOperator != -1 {
+                    let left = Double(operationsToReduce[indexOperator - 1])
+                    let right = Double(operationsToReduce[indexOperator + 1])
+                    operand = operationsToReduce[indexOperator]
+                    switch operand {
+                    case "+" : result = Double(left! + right!)
+                    case "-" : result = Double(left! - right!)
+                    default : break
+                    }
+                    operationsToReduce.removeSubrange(indexOperator - 1..<indexOperator + 2)
+                    operationsToReduce.insert(String(result), at: indexOperator - 1)
+                }
             }
-            
-            
         }
-        
         textView.text.append(" = \(operationsToReduce.first!)")
+        
     }
-    
-    
     
     
     
