@@ -11,7 +11,7 @@ import UIKit
 class ViewController: UIViewController {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet var numberButtons: [UIButton]!
-
+    
     
     var elements: [String] {
         return textView.text.split(separator: " ").map { "\($0)" }
@@ -66,27 +66,27 @@ class ViewController: UIViewController {
         if canAddOperator {
             textView.text.append(" - ")
         } else {
-             alertOperator(.operatorIsAlreadyInPlace)
+            alertOperator(.operatorIsAlreadyInPlace)
         }
     }
     
     @IBAction func tappedMultiplicationButton(_ sender: Any) {
         if canAddOperator {
-                   textView.text.append(" x ")
-               } else {
-                    alertOperator(.operatorIsAlreadyInPlace)
-               }
+            textView.text.append(" x ")
+        } else {
+            alertOperator(.operatorIsAlreadyInPlace)
+        }
         
-      }
-      
-      @IBAction func tappedDivisionButton(_ sender: Any) {
+    }
+    
+    @IBAction func tappedDivisionButton(_ sender: Any) {
         if canAddOperator {
-                   textView.text.append(" / ")
-               } else {
-                    alertOperator(.operatorIsAlreadyInPlace)
-               }
-          
-      }
+            textView.text.append(" / ")
+        } else {
+            alertOperator(.operatorIsAlreadyInPlace)
+        }
+        
+    }
     
     @IBAction func tappedEqualButton(_ sender: UIButton) {
         guard expressionIsCorrect else {
@@ -101,42 +101,50 @@ class ViewController: UIViewController {
         
         // Create local copy of operations
         var operationsToReduce = elements
+        var result: Double = 0
+        var indexOperator : Int
+        var operand : String
         // Iterate over operations while an operand still here
-            while operationsToReduce.count > 1 {
-                let left = Int(operationsToReduce[0])!
-                let operand = operationsToReduce[1]
-                let right = Int(operationsToReduce[2])!
-                
-                
-                let result: Int
+        while operationsToReduce.count > 1 {
+            indexOperator = operationsToReduce.firstIndex(of: "*")!
+            if indexOperator == nil {
+                indexOperator = operationsToReduce.firstIndex(of: "/")!
+            }
+            if indexOperator != nil {
+                let left = Double(operationsToReduce[indexOperator - 1])
+                let right = Double(operationsToReduce[indexOperator + 1])
+                operand = operationsToReduce[indexOperator]
                 switch operand {
-                case "+": result = left + right
-                case "-": result = left - right
-                case "x" : result = left * right
-                case "/" : result = left / right
-                default: return
+                case "*" : result = Double(left! * right!)
+                case "/" : result = Double(left! / right!)
+                default : break
                 }
-                
-                operationsToReduce = Array(operationsToReduce.dropFirst(3))
-                operationsToReduce.insert("\(result)", at: 0)
+                operationsToReduce.removeSubrange(indexOperator - 1..<indexOperator + 1)
+                operationsToReduce.insert(String(result), at: indexOperator - 1)
+            }
+            
+            
         }
-
+        
         textView.text.append(" = \(operationsToReduce.first!)")
     }
     
-  
+    
+    
+    
+    
     
     enum alertOperatorEnum {
         case operatorIsAlreadyInPlace, startANewCalcul,enterACorrectExpression
-    
+        
     }
     /// The operator alert that changes according to the enum
     func alertOperator(_ alertOperator : alertOperatorEnum ){
         let alertVC = UIAlertController(title: "Zéro!", message: stringMessageAlert(alertOperator), preferredStyle: .alert)
-                   alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-                   return self.present(alertVC, animated: true, completion: nil)
-     }
-     /// The switch of the different alert messages
+        alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        return self.present(alertVC, animated: true, completion: nil)
+    }
+    /// The switch of the different alert messages
     func stringMessageAlert(_ alertOperator :  alertOperatorEnum ) -> String {
         let message = ["Un operateur est déja mis !","Démarrez un nouveau calcul !","Entrez une expression correcte !"]
         switch  alertOperator  {
