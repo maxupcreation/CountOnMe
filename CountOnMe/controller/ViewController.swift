@@ -120,6 +120,7 @@ class ViewController: UIViewController {
                 default : break
                 }
                 operationsToReduce.removeSubrange(indexOperator - 1..<indexOperator + 2)
+                result = round(1000 * result) / 1000
                 operationsToReduce.insert(String(result), at: indexOperator - 1)
             } else {
                 indexOperator = operationsToReduce.firstIndex(of: "+") ?? -1
