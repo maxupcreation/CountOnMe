@@ -12,32 +12,17 @@ class ViewController: UIViewController {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet var numberButtons: [UIButton]!
     
-    
-    var elements: [String] {
-        return textView.text.split(separator: " ").map { "\($0)" }
-    }
-    
-    // Error check computed variables
-    var expressionIsCorrect: Bool {
-        return elements.last != "+" && elements.last != "-"
-    }
-    
-    var expressionHaveEnoughElement: Bool {
-        return elements.count >= 3
-    }
-    
-    var canAddOperator: Bool {
-        return elements.last != "+" && elements.last != "-" && elements.last != "x" && elements.last != "/"
-    }
-    
-    var expressionHaveResult: Bool {
-        return textView.text.firstIndex(of: "=") != nil
-    }
+    var calcul = Calcul()
     
     // View Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        let name = Notification.Name(rawValue:"updateString")
+        NotificationCenter.default.addObserver(self, selector: #selector(tappedEqualButton), name: name, object: nil)
+    }
+    
+    func updateScreen() {
+        textView.text = calcul.calculString
     }
     
     
@@ -47,15 +32,13 @@ class ViewController: UIViewController {
             return
         }
         
-        if expressionHaveResult {
-            textView.text = ""
+        if calcul.expressionHaveResult {
+            textView.text = numberText
         }
-        
-        textView.text.append(numberText)
     }
     
     @IBAction func tappedAdditionButton(_ sender: UIButton) {
-        if canAddOperator {
+        if calcul.canAddOperator {
             textView.text.append(" + ")
         } else {
             alertOperator(.operatorIsAlreadyInPlace)
@@ -63,7 +46,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func tappedSubstractionButton(_ sender: UIButton) {
-        if canAddOperator {
+        if calcul.canAddOperator {
             textView.text.append(" - ")
         } else {
             alertOperator(.operatorIsAlreadyInPlace)
@@ -71,7 +54,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func tappedMultiplicationButton(_ sender: Any) {
-        if canAddOperator {
+        if calcul.canAddOperator {
             textView.text.append(" x ")
         } else {
             alertOperator(.operatorIsAlreadyInPlace)
@@ -80,7 +63,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func tappedDivisionButton(_ sender: Any) {
-        if canAddOperator {
+        if calcul.canAddOperator {
             textView.text.append(" / ")
         } else {
             alertOperator(.operatorIsAlreadyInPlace)
@@ -88,64 +71,22 @@ class ViewController: UIViewController {
         
     }
     
+    
     @IBAction func tappedEqualButton(_ sender: UIButton) {
-        guard expressionIsCorrect else {
+        
+        guard calcul.expressionIsCorrect else {
             alertOperator(.enterACorrectExpression)
             return
         }
         
-        guard expressionHaveEnoughElement else {
+        guard calcul.expressionHaveEnoughElement else {
             alertOperator(.startANewCalcul)
             return
         }
         
-        // Create local copy of operations
-        var operationsToReduce = elements
-        var result: Double = 0
-        var indexOperator : Int
-        var operand : String
-        // Iterate over operations while an operand still here
-        while operationsToReduce.count > 1 {
-            indexOperator = operationsToReduce.firstIndex(of: "x") ?? -1
-            if indexOperator == -1 {
-                indexOperator = operationsToReduce.firstIndex(of: "/") ?? -1
-            }
-            if indexOperator != -1 {
-                let left = Double(operationsToReduce[indexOperator - 1])
-                let right = Double(operationsToReduce[indexOperator + 1])
-                operand = operationsToReduce[indexOperator]
-                switch operand {
-                case "x" : result = Double(left! * right!)
-                case "/" : result = Double(left! / right!)
-                default : break
-                }
-                operationsToReduce.removeSubrange(indexOperator - 1..<indexOperator + 2)
-                result = round(1000 * result) / 1000
-                operationsToReduce.insert(String(result), at: indexOperator - 1)
-            } else {
-                indexOperator = operationsToReduce.firstIndex(of: "+") ?? -1
-                if indexOperator == -1 {
-                    indexOperator = operationsToReduce.firstIndex(of: "-") ?? -1
-                }
-                if indexOperator != -1 {
-                    let left = Double(operationsToReduce[indexOperator - 1])
-                    let right = Double(operationsToReduce[indexOperator + 1])
-                    operand = operationsToReduce[indexOperator]
-                    switch operand {
-                    case "+" : result = Double(left! + right!)
-                    case "-" : result = Double(left! - right!)
-                    default : break
-                    }
-                    operationsToReduce.removeSubrange(indexOperator - 1..<indexOperator + 2)
-                    operationsToReduce.insert(String(result), at: indexOperator - 1)
-                }
-            }
-        }
-        textView.text.append(" = \(operationsToReduce.first!)")
+        calcul.OrderOfOperationAndCalculate()
         
     }
-    
-    
     
     
     enum alertOperatorEnum {
