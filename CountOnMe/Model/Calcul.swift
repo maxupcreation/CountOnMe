@@ -10,19 +10,15 @@ import Foundation
 
 class Calcul {
     
-    
-    
     var calculString = "" {
         didSet {
-            NotificationCenter.default.post(name: Notification.Name("updateCalculString"), object: nil)
+            NotificationCenter.default.post(name: Notification.Name("updateTextView"), object: nil)
         }
     }
     
     var elements: [String] {
         return  calculString.split(separator: " ").map { "\($0)" }
     }
-    
-   
     
     // Error check computed variables
     var expressionIsCorrect: Bool {
@@ -92,6 +88,5 @@ class Calcul {
         }
         calculString = calculString + "=\(operation[0])"
     }
-    
 }
 

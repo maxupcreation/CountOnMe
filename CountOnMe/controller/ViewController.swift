@@ -18,11 +18,11 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let name = Notification.Name(rawValue:"updateCalculString")
-        NotificationCenter.default.addObserver(self, selector: #selector(updateCalculString), name: name, object: nil)
+        let name = Notification.Name(rawValue:"updateTextView")
+        NotificationCenter.default.addObserver(self, selector: #selector(updateTextView), name: name, object: nil)
     }
     
-    @objc func updateCalculString() {
+    @objc func updateTextView() {
         textView.text = calcul.calculString
     }
     
