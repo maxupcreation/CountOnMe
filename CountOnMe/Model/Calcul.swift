@@ -10,15 +10,19 @@ import Foundation
 
 class Calcul {
     
+    
+    
     var calculString = "" {
         didSet {
-            NotificationCenter.default.post(name: Notification.Name("updateString"), object: nil)
+            NotificationCenter.default.post(name: Notification.Name("updateCalculString"), object: nil)
         }
     }
     
     var elements: [String] {
         return  calculString.split(separator: " ").map { "\($0)" }
     }
+    
+   
     
     // Error check computed variables
     var expressionIsCorrect: Bool {
@@ -58,7 +62,6 @@ class Calcul {
     }
     
     func OrderOfOperationAndCalculate() {
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "calculateNotification"), object: nil)
         var operation = elements
         let priorityOperator = ["x","/"]
         let calcOperator = ["+","-"]
@@ -79,7 +82,6 @@ class Calcul {
             }
         }
         if let index = operatorIndex {
-            
             let calculOperator = operation[index]
             let left = Double(operation[index - 1])
             let right = Double(operation[index + 1])

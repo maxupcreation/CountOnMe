@@ -17,25 +17,28 @@ class ViewController: UIViewController {
     // View Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        let name = Notification.Name(rawValue:"updateString")
-        NotificationCenter.default.addObserver(self, selector: #selector(tappedEqualButton), name: name, object: nil)
+        
+        let name = Notification.Name(rawValue:"updateCalculString")
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCalculString), name: name, object: nil)
     }
     
-    func updateScreen() {
+    @objc func updateCalculString() {
         textView.text = calcul.calculString
     }
     
     
     // View actions
     @IBAction func tappedNumberButton(_ sender: UIButton) {
-        guard let numberText = sender.title(for: .normal) else {
+       guard let numberText = sender.title(for: .normal) else {
             return
         }
         
         if calcul.expressionHaveResult {
-            textView.text = numberText
+            textView.text = ""
         }
-    }
+        
+        textView.text.append(numberText)
+        }
     
     @IBAction func tappedAdditionButton(_ sender: UIButton) {
         if calcul.canAddOperator {
@@ -59,7 +62,6 @@ class ViewController: UIViewController {
         } else {
             alertOperator(.operatorIsAlreadyInPlace)
         }
-        
     }
     
     @IBAction func tappedDivisionButton(_ sender: Any) {
@@ -85,7 +87,7 @@ class ViewController: UIViewController {
         }
         
         calcul.OrderOfOperationAndCalculate()
-        
+      
     }
     
     
@@ -93,6 +95,7 @@ class ViewController: UIViewController {
         case operatorIsAlreadyInPlace, startANewCalcul,enterACorrectExpression
         
     }
+    
     /// The operator alert that changes according to the enum
     func alertOperator(_ alertOperator : alertOperatorEnum ){
         let alertVC = UIAlertController(title: "Zéro!", message: stringMessageAlert(alertOperator), preferredStyle: .alert)
