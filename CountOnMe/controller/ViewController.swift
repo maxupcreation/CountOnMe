@@ -73,6 +73,9 @@ class ViewController: UIViewController {
         
     }
     
+    @IBAction func tappedAC(_ sender: UIButton) {
+        textView.text = " "
+    }
     
     @IBAction func tappedEqualButton(_ sender: UIButton) {
         

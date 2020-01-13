@@ -11,6 +11,13 @@ import XCTest
 
 class SimpleCalcTests: XCTestCase {
 
-   
-    
+   var calcul: Calcul!
+
+      override func setUp() {
+          super.setUp()
+          calcul = Calcul()
+      }
+      func testGivenIsExpressionCorrect_WhenStringNumberIsNil_ThenExpressionReturnFalse() {
+        XCTAssertTrue(calcul.expressionIsCorrect)
+      }
 }
