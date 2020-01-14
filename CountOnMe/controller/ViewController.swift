@@ -20,7 +20,23 @@ class ViewController: UIViewController {
         
         let name = Notification.Name(rawValue:"updateTextView")
         NotificationCenter.default.addObserver(self, selector: #selector(updateTextView), name: name, object: nil)
+        
+        let notifCorrect = Notification.Name(rawValue:"notifAlertCorrectExpression")
+        NotificationCenter.default.addObserver(self, selector: #selector(notifAlertCorrectExpression), name: notifCorrect, object: nil)
+        
+        
+        let notifStart = Notification.Name(rawValue:"notifAlertStartNewCalcul")
+        NotificationCenter.default.addObserver(self, selector: #selector(notifAlertStartNewCalcul), name: notifStart, object: nil)
+        
     }
+    
+    @objc func notifAlertCorrectExpression() {
+        alertOperator(.enterACorrectExpression)
+    }
+    @objc func notifAlertStartNewCalcul() {
+        alertOperator(.startANewCalcul)
+    }
+    
     
     @objc func updateTextView() {
         textView.text = calcul.calculString
@@ -29,20 +45,15 @@ class ViewController: UIViewController {
     
     // View actions
     @IBAction func tappedNumberButton(_ sender: UIButton) {
-       guard let numberText = sender.title(for: .normal) else {
+        guard let numberText = sender.title(for: .normal) else {
             return
         }
-        
-        if calcul.expressionHaveResult {
-            textView.text = ""
-        }
-        
-        textView.text.append(numberText)
-        }
+        calcul.addNumber(number : numberText)
+    }
     
     @IBAction func tappedAdditionButton(_ sender: UIButton) {
         if calcul.canAddOperator {
-            textView.text.append(" + ")
+            calcul.addOperator(operation:"+")
         } else {
             alertOperator(.operatorIsAlreadyInPlace)
         }
@@ -50,7 +61,8 @@ class ViewController: UIViewController {
     
     @IBAction func tappedSubstractionButton(_ sender: UIButton) {
         if calcul.canAddOperator {
-            textView.text.append(" - ")
+            calcul.addOperator(operation:"-")
+         
         } else {
             alertOperator(.operatorIsAlreadyInPlace)
         }
@@ -58,7 +70,7 @@ class ViewController: UIViewController {
     
     @IBAction func tappedMultiplicationButton(_ sender: Any) {
         if calcul.canAddOperator {
-            textView.text.append(" x ")
+            calcul.addOperator(operation:"x")
         } else {
             alertOperator(.operatorIsAlreadyInPlace)
         }
@@ -66,31 +78,20 @@ class ViewController: UIViewController {
     
     @IBAction func tappedDivisionButton(_ sender: Any) {
         if calcul.canAddOperator {
-            textView.text.append(" / ")
+            calcul.addOperator(operation:"/")
         } else {
             alertOperator(.operatorIsAlreadyInPlace)
         }
-        
     }
     
     @IBAction func tappedAC(_ sender: UIButton) {
-        textView.text = " "
+        calcul.cleanNumber()
     }
     
     @IBAction func tappedEqualButton(_ sender: UIButton) {
         
-        guard calcul.expressionIsCorrect else {
-            alertOperator(.enterACorrectExpression)
-            return
-        }
+        calcul.orderOfOperationAndCalculate()
         
-        guard calcul.expressionHaveEnoughElement else {
-            alertOperator(.startANewCalcul)
-            return
-        }
-        
-        calcul.OrderOfOperationAndCalculate()
-      
     }
     
     
@@ -98,6 +99,7 @@ class ViewController: UIViewController {
         case operatorIsAlreadyInPlace, startANewCalcul,enterACorrectExpression
         
     }
+    
     
     /// The operator alert that changes according to the enum
     func alertOperator(_ alertOperator : alertOperatorEnum ){

@@ -38,12 +38,41 @@ class Calcul {
     }
     
     func format(number: Double) -> String {
-           let formater = NumberFormatter()
-           formater.minimumFractionDigits = 0
-           formater.maximumFractionDigits = 2
-           guard let value = formater.string(from: NSNumber(value:number)) else { return ""}
-           return value
-       }
+        let formater = NumberFormatter()
+        formater.minimumFractionDigits = 0
+        formater.maximumFractionDigits = 2
+        guard let value = formater.string(from: NSNumber(value:number)) else { return ""}
+        return value
+    }
+    
+    func addNumber(number: String) {
+        if expressionHaveResult {
+            calculString = ""
+        }
+        calculString.append(number)
+    }
+    
+    func cleanNumber() {
+        calculString = ""
+        
+    }
+    
+    func addOperator(operation: String) {
+        if canAddOperator {
+            switch operation {
+            case "+":
+                calculString.append(" + ")
+            case "-":
+                calculString.append(" - ")
+            case "x":
+                calculString.append(" x ")
+            case "/":
+                calculString.append(" / ")
+            default : break // notif
+            }
+            
+        }
+    }
     
     func calculate( left : Double, right : Double, calculOperator : String) -> Double {
         var result : Double = 0
@@ -57,15 +86,24 @@ class Calcul {
         return result
     }
     
-    func OrderOfOperationAndCalculate() {
+    func orderOfOperationAndCalculate() {
         var operation = elements
         let priorityOperator = ["x","/"]
         let calcOperator = ["+","-"]
         var result : Double = 0
         var operatorIndex : Int?
         
+        guard expressionIsCorrect else {
+            NotificationCenter.default.post(name: Notification.Name("notifAlertCorrectExpression"), object: nil)
+            return
+        }
+        
+        guard expressionHaveEnoughElement else {
+            NotificationCenter.default.post(name: Notification.Name("notifAlertStartNewCalcul"), object: nil)
+            return
+        }
+        
         while operation.count > 1 {
-            
             
             let firstIndexPriorityOperator = operation.firstIndex(where : {priorityOperator.contains($0)})
             if let priorityOperatorIndex = firstIndexPriorityOperator {
@@ -76,17 +114,18 @@ class Calcul {
                     operatorIndex = normalOperatorIndex
                 }
             }
-        }
-        if let index = operatorIndex {
-            let calculOperator = operation[index]
-            let left = Double(operation[index - 1])
-            let right = Double(operation[index + 1])
-            result = calculate(left: left!, right: right!, calculOperator: calculOperator)
-            operation[index] = "\(result)"
-            operation.remove(at : index + 1)
-            operation.remove(at : index - 1)
+            if let index = operatorIndex {
+                let calculOperator = operation[index]
+                let left = Double(operation[index - 1])
+                let right = Double(operation[index + 1])
+                result = calculate(left: left!, right: right!, calculOperator: calculOperator)
+                operation[index] = "\(result)"
+                operation.remove(at : index + 1)
+                operation.remove(at : index - 1)
+            }
         }
         calculString = calculString + "=\(operation[0])"
     }
+    
+    
 }
-
