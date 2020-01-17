@@ -49,6 +49,7 @@ class SimpleCalcTests: XCTestCase {
         let result = calcul.calculate( left : 1.0, right : 1.0, calculOperator : "+")
         XCTAssertTrue(result == 2)
     }
+    
     func testorderOfOperationAndCalculate_whenTappedEqualButton_ThenreturnTrue() {
        calcul.addNumber(number: "1")
         calcul.addOperator(operation: "+")
@@ -58,20 +59,22 @@ class SimpleCalcTests: XCTestCase {
         calcul.addOperator(operation: "/")
         calcul.addNumber(number: "2")
         calcul.orderOfOperationAndCalculate()
-        XCTAssert(calcul.calculString == "1 + 1 x 3 / 2 = 2.5")
+        XCTAssert(calcul.calculString == "1 + 1 x 3 / 2=2.5")
+        // corriger espacement
     }
     
     func testcleanNumber_whenTappedACButton_ThenreturnTrue() {
           calcul.cleanNumber()
           XCTAssertTrue(calcul.calculString == "")
-          
       }
     
     func testelements_whenTappedACButton_ThenreturnTrue() {
-            
-             
+        calcul.cleanNumber()
+        XCTAssertTrue(calcul.calculString == "")
          }
     
-
-    
+    func testAddNumber_whenTappedButtonNumber_ThenreturnTrue() {
+        calcul.addNumber(number: "1")
+        XCTAssertTrue(calcul.canAddOperator)
+}
 }
