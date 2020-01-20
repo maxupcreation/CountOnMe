@@ -29,6 +29,15 @@ class Calcul {
         return elements.count >= 3
     }
     
+    private var AtLeastOneNumber : Bool {
+        if calculString >= "1" && calculString <= "9"{
+            return elements.count >= 1 }
+        else {
+             NotificationCenter.default.post(name: Notification.Name("notifAlertCorrectExpression"), object: nil)
+        }
+        return false
+    }
+    
     var canAddOperator: Bool {
         return elements.last != "+" && elements.last != "-" && elements.last != "x" && elements.last != "/"
     }
@@ -58,7 +67,9 @@ class Calcul {
     }
     
     func addOperator(operation: String) {
+        if AtLeastOneNumber {
         if canAddOperator {
+        
             switch operation {
             case "+":
                 calculString.append(" + ")
@@ -70,7 +81,7 @@ class Calcul {
                 calculString.append(" / ")
             default : break // notif
             }
-            
+            }
         }
     }
     

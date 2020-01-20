@@ -89,11 +89,12 @@ class ViewController: UIViewController {
     }
     
     @IBAction func tappedEqualButton(_ sender: UIButton) {
-        
-        calcul.orderOfOperationAndCalculate()
-        
+        if calcul.expressionHaveResult {
+            calcul.calculString = ""
+        } else {
+         calcul.orderOfOperationAndCalculate()
+        }
     }
-    
     
     enum alertOperatorEnum {
         case operatorIsAlreadyInPlace, startANewCalcul,enterACorrectExpression
