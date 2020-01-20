@@ -59,7 +59,7 @@ class SimpleCalcTests: XCTestCase {
         calcul.addOperator(operation: "/")
         calcul.addNumber(number: "2")
         calcul.orderOfOperationAndCalculate()
-        XCTAssert(calcul.calculString == "1 + 1 x 3 / 2=2.5")
+        XCTAssert(calcul.calculString == "1 + 1 x 3 / 2= 2.5")
         // corriger espacement
     }
     

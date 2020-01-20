@@ -135,7 +135,7 @@ class Calcul {
                 operation.remove(at : index - 1)
             }
         }
-        calculString = calculString + "=\(operation[0])"
+        calculString = calculString + " =\(operation[0])"
     }
     
     
