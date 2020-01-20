@@ -101,7 +101,7 @@ class Calcul {
         var operation = elements
         let priorityOperator = ["x","/"]
         let calcOperator = ["+","-"]
-        var result : Double = 0
+        var result = ""
         var operatorIndex : Int?
         
         guard expressionIsCorrect else {
@@ -129,8 +129,8 @@ class Calcul {
                 let calculOperator = operation[index]
                 let left = Double(operation[index - 1])
                 let right = Double(operation[index + 1])
-                result = calculate(left: left!, right: right!, calculOperator: calculOperator)
-                operation[index] = "\(result)"
+                result = format(number: calculate(left: left!, right: right!, calculOperator: calculOperator))
+                operation[index] = result
                 operation.remove(at : index + 1)
                 operation.remove(at : index - 1)
             }
