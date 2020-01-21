@@ -16,12 +16,12 @@ class Calcul {
         }
     }
     
-    var elements: [String] {
+    private var elements: [String] {
         return  calculString.split(separator: " ").map { "\($0)" }
     }
     
     // Error check computed variables
-    var expressionIsCorrect: Bool {
+    private  var expressionIsCorrect: Bool {
         return elements.last != "+" && elements.last != "-"
     }
     
@@ -29,11 +29,11 @@ class Calcul {
         return elements.count >= 3
     }
     
-    private var AtLeastOneNumber : Bool {
+    var atLeastOneNumber : Bool {
         if calculString >= "1" && calculString <= "9"{
             return elements.count >= 1 }
         else {
-             NotificationCenter.default.post(name: Notification.Name("notifAlertCorrectExpression"), object: nil)
+            NotificationCenter.default.post(name: Notification.Name("notifAlertCorrectExpression"), object: nil)
         }
         return false
     }
@@ -67,20 +67,20 @@ class Calcul {
     }
     
     func addOperator(operation: String) {
-        if AtLeastOneNumber {
-        if canAddOperator {
-        
-            switch operation {
-            case "+":
-                calculString.append(" + ")
-            case "-":
-                calculString.append(" - ")
-            case "x":
-                calculString.append(" x ")
-            case "/":
-                calculString.append(" / ")
-            default : break // notif
-            }
+        if atLeastOneNumber {
+            if canAddOperator {
+                
+                switch operation {
+                case "+":
+                    calculString.append(" + ")
+                case "-":
+                    calculString.append(" - ")
+                case "x":
+                    calculString.append(" x ")
+                case "/":
+                    calculString.append(" / ")
+                default : break // notif
+                }
             }
         }
     }
@@ -132,11 +132,8 @@ class Calcul {
                 result = format(number: calculate(left: left!, right: right!, calculOperator: calculOperator))
                 operation[index] = result
                 operation.remove(at : index + 1)
-                operation.remove(at : index - 1)
-            }
+                operation.remove(at : index - 1)}
         }
-        calculString = calculString + " =\(operation[0])"
+        calculString = calculString + " = \(operation[0])"
     }
-    
-    
 }
