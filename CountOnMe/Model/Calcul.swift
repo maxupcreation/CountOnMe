@@ -30,10 +30,10 @@ class Calcul {
     }
     
     var atLeastOneNumber : Bool {
-        if calculString >= "1" && calculString <= "9"{
+        if calculString >= "0" && calculString <= "9"{
             return elements.count >= 1 }
         else {
-            NotificationCenter.default.post(name: Notification.Name("notifAlertCorrectExpression"), object: nil)
+            NotificationCenter.default.post(name: Notification.Name("BeginWithOperator"), object: nil)
         }
         return false
     }

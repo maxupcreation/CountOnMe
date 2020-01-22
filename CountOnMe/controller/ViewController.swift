@@ -25,8 +25,12 @@ class ViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(notifAlertCorrectExpression), name: notifCorrect, object: nil)
         
         
-        let notifStart = Notification.Name(rawValue:"notifAlertStartNewCalcul")
-        NotificationCenter.default.addObserver(self, selector: #selector(notifAlertStartNewCalcul), name: notifStart, object: nil)
+        let notifNewcalcul = Notification.Name(rawValue:"notifAlertStartNewCalcul")
+        NotificationCenter.default.addObserver(self, selector: #selector(notifAlertStartNewCalcul), name: notifNewcalcul, object: nil)
+        
+        
+        let notifOperator = Notification.Name(rawValue:"BeginWithOperator")
+        NotificationCenter.default.addObserver(self, selector: #selector(notBeginWithOperator), name: notifOperator, object: nil)
         
     }
     
@@ -36,6 +40,10 @@ class ViewController: UIViewController {
     @objc func notifAlertStartNewCalcul() {
         alertOperator(.startANewCalcul)
     }
+    
+    @objc func notBeginWithOperator() {
+         alertOperator(.notBeginWithOperator)
+     }
     
     
     @objc func updateTextView() {
@@ -97,24 +105,24 @@ class ViewController: UIViewController {
     }
     
     enum alertOperatorEnum {
-        case operatorIsAlreadyInPlace, startANewCalcul,enterACorrectExpression
+        case operatorIsAlreadyInPlace, startANewCalcul,enterACorrectExpression, notBeginWithOperator
         
     }
-    
-    
+
     /// The operator alert that changes according to the enum
     func alertOperator(_ alertOperator : alertOperatorEnum ){
-        let alertVC = UIAlertController(title: "Zéro!", message: stringMessageAlert(alertOperator), preferredStyle: .alert)
+        let alertVC = UIAlertController(title: "Erreur ! 😥", message: stringMessageAlert(alertOperator), preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         return self.present(alertVC, animated: true, completion: nil)
     }
     /// The switch of the different alert messages
     func stringMessageAlert(_ alertOperator :  alertOperatorEnum ) -> String {
-        let message = ["Un operateur est déja mis !","Démarrez un nouveau calcul !","Entrez une expression correcte !"]
+        let message = ["Un operateur est déja mis !","Démarrez un nouveau calcul !","Entrez une expression correcte !", "Vous ne pouvez pas commencez par un opérateur !"]
         switch  alertOperator  {
         case .operatorIsAlreadyInPlace : return message[0]
         case .startANewCalcul : return message[1]
         case .enterACorrectExpression : return message[2]
+        case .notBeginWithOperator : return message [3]
         }
     }
 }
