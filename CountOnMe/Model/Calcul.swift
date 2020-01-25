@@ -22,7 +22,7 @@ class Calcul {
     
     // Error check computed variables
     private  var expressionIsCorrect: Bool {
-        return elements.last != "+" && elements.last != "-"
+        return elements.last != "+" && elements.last != "-" && elements.last != "x" && elements.last != "/"
     }
     
     var expressionHaveEnoughElement: Bool {
@@ -79,7 +79,7 @@ class Calcul {
                     calculString.append(" x ")
                 case "/":
                     calculString.append(" / ")
-                default : break // notif
+                default : break 
                 }
             }
         }
