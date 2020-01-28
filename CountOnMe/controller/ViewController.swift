@@ -14,36 +14,23 @@ class ViewController: UIViewController {
     
     var calcul = Calcul()
     
-    // View Life cycles
+    // the different notifications that allow you to update the text displayed on the screen or display error notifications.
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let name = Notification.Name(rawValue:"updateTextView")
         NotificationCenter.default.addObserver(self, selector: #selector(updateTextView), name: name, object: nil)
         
-        let notifCorrect = Notification.Name(rawValue:"notifAlertCorrectExpression")
-        NotificationCenter.default.addObserver(self, selector: #selector(notifAlertCorrectExpression), name: notifCorrect, object: nil)
-        
-        
-        let notifNewcalcul = Notification.Name(rawValue:"notifAlertStartNewCalcul")
-        NotificationCenter.default.addObserver(self, selector: #selector(notifAlertStartNewCalcul), name: notifNewcalcul, object: nil)
-        
-        
-        let notifOperator = Notification.Name(rawValue:"BeginWithOperator")
-        NotificationCenter.default.addObserver(self, selector: #selector(notBeginWithOperator), name: notifOperator, object: nil)
+        let notifCorrect = Notification.Name(rawValue:"error")
+        NotificationCenter.default.addObserver(self, selector: #selector(errorHandler), name: notifCorrect, object: nil)
         
     }
     
-    @objc func notifAlertCorrectExpression() {
-        alertOperator(.enterACorrectExpression)
+    @objc func errorHandler(_ notification : Notification) {
+        if let message = notification.userInfo?["message"] as? String {
+            alertOperator(message) } else
+        {alertOperator("erreur")  }
     }
-    @objc func notifAlertStartNewCalcul() {
-        alertOperator(.startANewCalcul)
-    }
-    
-    @objc func notBeginWithOperator() {
-         alertOperator(.notBeginWithOperator)
-     }
     
     
     @objc func updateTextView() {
@@ -60,36 +47,25 @@ class ViewController: UIViewController {
     }
     
     @IBAction func tappedAdditionButton(_ sender: UIButton) {
-        if calcul.canAddOperator {
-            calcul.addOperator(operation:"+")
-        } else {
-            alertOperator(.operatorIsAlreadyInPlace)
-        }
+        
+        calcul.addOperator(operation:"+")
+        
     }
     
     @IBAction func tappedSubstractionButton(_ sender: UIButton) {
-        if calcul.canAddOperator {
-            calcul.addOperator(operation:"-")
-         
-        } else {
-            alertOperator(.operatorIsAlreadyInPlace)
-        }
+        
+        calcul.addOperator(operation:"-")
+        
     }
     
     @IBAction func tappedMultiplicationButton(_ sender: Any) {
-        if calcul.canAddOperator {
-            calcul.addOperator(operation:"x")
-        } else {
-            alertOperator(.operatorIsAlreadyInPlace)
-        }
+        calcul.addOperator(operation:"x")
+        
     }
     
     @IBAction func tappedDivisionButton(_ sender: Any) {
-        if calcul.canAddOperator {
-            calcul.addOperator(operation:"/")
-        } else {
-            alertOperator(.operatorIsAlreadyInPlace)
-        }
+        calcul.addOperator(operation:"/")
+        
     }
     
     @IBAction func tappedAC(_ sender: UIButton) {
@@ -100,7 +76,7 @@ class ViewController: UIViewController {
         if calcul.expressionHaveResult {
             calcul.calculString = ""
         } else {
-         calcul.orderOfOperationAndCalculate()
+            calcul.orderOfOperationAndCalculate()
         }
     }
     
@@ -108,21 +84,11 @@ class ViewController: UIViewController {
         case operatorIsAlreadyInPlace, startANewCalcul,enterACorrectExpression, notBeginWithOperator
         
     }
-
+    
     /// The operator alert that changes according to the enum
-    func alertOperator(_ alertOperator : alertOperatorEnum ){
-        let alertVC = UIAlertController(title: "Erreur ! 😥", message: stringMessageAlert(alertOperator), preferredStyle: .alert)
+    func alertOperator(_ alertOperator : String ){
+        let alertVC = UIAlertController(title: "Erreur ! 😥", message: alertOperator, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         return self.present(alertVC, animated: true, completion: nil)
-    }
-    /// The switch of the different alert messages
-    func stringMessageAlert(_ alertOperator :  alertOperatorEnum ) -> String {
-        let message = ["Un operateur est déja mis !","Démarrez un nouveau calcul !","Entrez une expression correcte !", "Vous ne pouvez pas commencez par un opérateur !"]
-        switch  alertOperator  {
-        case .operatorIsAlreadyInPlace : return message[0]
-        case .startANewCalcul : return message[1]
-        case .enterACorrectExpression : return message[2]
-        case .notBeginWithOperator : return message [3]
-        }
     }
 }

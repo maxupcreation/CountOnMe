@@ -10,6 +10,7 @@ import Foundation
 
 class Calcul {
     
+    /// the calculated property that contains the final result and updates the view via a notification
     var calculString = "" {
         didSet {
             NotificationCenter.default.post(name: Notification.Name("updateTextView"), object: nil)
@@ -18,6 +19,13 @@ class Calcul {
     
     private var elements: [String] {
         return  calculString.split(separator: " ").map { "\($0)" }
+    }
+    
+    private var notDivisionByZero : Bool {
+         if calculString.contains(" / 0") {
+            return false
+            }
+        return true
     }
     
     // Error check computed variables
@@ -33,7 +41,8 @@ class Calcul {
         if calculString >= "0" && calculString <= "9"{
             return elements.count >= 1 }
         else {
-            NotificationCenter.default.post(name: Notification.Name("BeginWithOperator"), object: nil)
+           let message = ["message": "Vous ne pouvez pas commencez par un opérateur !"]
+            NotificationCenter.default.post(name: Notification.Name("error"), object: nil,userInfo: message)
         }
         return false
     }
@@ -92,11 +101,11 @@ class Calcul {
         case "/":result = left / right
         case "+" :result = left + right
         case "-":result = left - right
-        default : print("error")
+        default : break
         }
         return result
     }
-    
+    /// the function which makes it possible to calculate, it first looks for the priority operators then carries out the calculation and returns the result in the variable calculString
     func orderOfOperationAndCalculate() {
         var operation = elements
         let priorityOperator = ["x","/"]
@@ -105,12 +114,20 @@ class Calcul {
         var operatorIndex : Int?
         
         guard expressionIsCorrect else {
-            NotificationCenter.default.post(name: Notification.Name("notifAlertCorrectExpression"), object: nil)
+            let message = ["message": "Entrez une expression correcte !"]
+            NotificationCenter.default.post(name: Notification.Name("error"), object: nil,userInfo: message)
             return
         }
         
         guard expressionHaveEnoughElement else {
-            NotificationCenter.default.post(name: Notification.Name("notifAlertStartNewCalcul"), object: nil)
+            let message = ["message": "Démarrez un nouveau calcul !"]
+            NotificationCenter.default.post(name: Notification.Name("error"), object: nil,userInfo: message)
+            return
+        }
+        
+        guard notDivisionByZero else {
+            let message = ["message": "Impossible de diviser par zéro !"]
+            NotificationCenter.default.post(name: Notification.Name("error"), object: nil,userInfo: message)
             return
         }
         
@@ -136,4 +153,5 @@ class Calcul {
         }
         calculString = calculString + " = \(operation[0])"
     }
+    
 }

@@ -81,4 +81,47 @@ class SimpleCalcTests: XCTestCase {
         
     }
     
+    func testExpressionHaveResult_expressionHaveResult_ThenreturnTrue(){
+        calcul.calculString = "1 + 1 = 2"
+        calcul.addNumber(number : "2")
+        XCTAssertTrue(calcul.calculString == "2")
+    }
+    
+    func testnotDivisionByZero_whenDivisionByZero_ThenreturnNotification(){
+        
+        expectation(forNotification: NSNotification.Name(rawValue:"error"), object: nil, handler: nil)
+        calcul.calculString = "1 / 0 "
+        calcul.orderOfOperationAndCalculate()
+        waitForExpectations(timeout: 0.1, handler: nil)
+    }
+    
+    
+    func testoperatorLess_whenAddLessOperator_ThenreturnTrue(){
+        calcul.calculString = "2 - 1"
+        calcul.addOperator(operation: "-")
+        XCTAssertTrue(calcul.calculString == "2 - 1 - ")
+    }
+    
+    
+    func testnotMoreThanOneOperator_whenAddLessOperator_ThenreturnFalse(){
+        calcul.calculString = "+ "
+        calcul.addOperator(operation: "+")
+        XCTAssertFalse(calcul.canAddOperator)
+    }
+    
+    
+    func testEnterACorrectExpression_whenIncompletCalcul_ThenreturnNotification(){
+        expectation(forNotification: NSNotification.Name(rawValue:"error"), object: nil, handler: nil)
+        calcul.calculString = "1 + "
+        calcul.orderOfOperationAndCalculate()
+        waitForExpectations(timeout: 0.1, handler: nil)
+    }
+    
+    func testStartNewCalcul_whenTappedEqualButtonWithNoCalcul_ThenreturnNotification(){
+          expectation(forNotification: NSNotification.Name(rawValue:"error"), object: nil, handler: nil)
+          calcul.calculString = "1"
+          calcul.orderOfOperationAndCalculate()
+          waitForExpectations(timeout: 0.1, handler: nil)
+      }
+    
 }
