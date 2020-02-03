@@ -88,7 +88,7 @@ class Calcul {
                     calculString.append(" x ")
                 case "/":
                     calculString.append(" / ")
-                default : break 
+                default : break
                 }
             }
         }
