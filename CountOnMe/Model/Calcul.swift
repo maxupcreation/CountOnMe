@@ -90,6 +90,10 @@ class Calcul {
                     calculString.append(" / ")
                 default : break
                 }
+            } else {
+                let message = ["message": "Vous ne pouvez pas ajouter deux opérateurs d'affilées!"]
+                NotificationCenter.default.post(name: Notification.Name("error"), object: nil,userInfo: message)
+                return
             }
         }
     }
