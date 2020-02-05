@@ -124,4 +124,11 @@ class SimpleCalcTests: XCTestCase {
           waitForExpectations(timeout: 0.1, handler: nil)
       }
     
+    func testnotAddOperator_whenThereIsAlreadyAnOperator_ThenreturnNotification(){
+        expectation(forNotification: NSNotification.Name(rawValue:"error"), object: nil, handler: nil)
+        calcul.calculString = "1 +"
+        calcul.addOperator(operation: "+")
+        waitForExpectations(timeout: 0.1, handler: nil)
+    }
+    
 }
